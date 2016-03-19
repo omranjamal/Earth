@@ -1,12 +1,17 @@
 html, body
 {
-background: #d1006f;
-background: -moz-linear-gradient(45deg,  #d1006f 0%, #ff003b 100%);
-background: -webkit-linear-gradient(45deg,  #d1006f 0%,#ff003b 100%);
-background: linear-gradient(45deg,  #d1006f 0%,#ff003b 100%);
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d1006f', endColorstr='#ff003b',GradientType=1 );
-
+	background: #d1006f;
+	background: -moz-linear-gradient(45deg,  #d1006f 0%, #ff003b 100%);
+	background: -webkit-linear-gradient(45deg,  #d1006f 0%,#ff003b 100%);
+	background: linear-gradient(45deg,  #d1006f 0%,#ff003b 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d1006f', endColorstr='#ff003b',GradientType=1 );
 }
+
+
+/*html, body 
+{
+	background: #8b0062;
+}*/
 
 body 
 {

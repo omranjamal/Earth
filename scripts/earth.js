@@ -47,11 +47,11 @@ module.exports = function (options) {
 	);
 
 	var wire_mat = new THREE.MeshBasicMaterial({
-		color: 0x000000,
+		color: 0x770054,
 		wireframe: true,
-		opacity: 0.3,
+		opacity: 0.7,
 		transparent: true,
-		wireframeLinewidth: 20
+		wireframeLinewidth: 2
 	});
 
 	var wire = new THREE.Mesh(wire_geo, wire_mat);
