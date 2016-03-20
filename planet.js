@@ -161,7 +161,7 @@ scene.add(directional_light);
 var fx_vars = {
 	bobbing: 0,
 	orbit: 0,
-	moon_rot: Math.PI
+	moon_rot: 0
 };
 
 var fx = {
@@ -181,11 +181,11 @@ var fx = {
 		fx_vars.bobbing = (fx_vars.bobbing+0.02)%6.28;
 	},
 	moon_rotation: function () {
-		moon.rotation.y = -1*fx_vars.moon_rot;
+		moon.rotation.y = fx_vars.moon_rot;
 		fx_vars.moon_rot = (fx_vars.moon_rot+0.008)%6.28;
 	},
 	moon_orbit: function () {
-		moon.position.x = Math.cos(fx_vars.orbit)*250;
+		moon.position.x = -1*Math.cos(fx_vars.orbit)*250;
 		moon.position.y = Math.cos(fx_vars.orbit)*100;
 		moon.position.z = Math.sin(fx_vars.orbit)*250;
 
