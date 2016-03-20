@@ -13,7 +13,7 @@ module.exports = function (options) {
 
 	mat.map = THREE.ImageUtils.loadTexture('images/color.jpg');
 	mat.bumpMap = THREE.ImageUtils.loadTexture('images/bump.jpg');
-	mat.bumpScale = 13;
+	mat.bumpScale = 9;
 
 	mat.specularMap = THREE.ImageUtils.loadTexture('images/specular.jpg');
 	mat.specular  = new THREE.Color('gray');
@@ -47,7 +47,7 @@ module.exports = function (options) {
 	);
 
 	var wire_mat = new THREE.MeshBasicMaterial({
-		color: 0x770054,
+		color: 0x00707d,
 		wireframe: true,
 		opacity: 0.7,
 		transparent: true,

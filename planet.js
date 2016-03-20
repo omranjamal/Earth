@@ -14,7 +14,7 @@ module.exports = function (options) {
 
 	mat.map = THREE.ImageUtils.loadTexture('images/color.jpg');
 	mat.bumpMap = THREE.ImageUtils.loadTexture('images/bump.jpg');
-	mat.bumpScale = 13;
+	mat.bumpScale = 9;
 
 	mat.specularMap = THREE.ImageUtils.loadTexture('images/specular.jpg');
 	mat.specular  = new THREE.Color('gray');
@@ -48,7 +48,7 @@ module.exports = function (options) {
 	);
 
 	var wire_mat = new THREE.MeshBasicMaterial({
-		color: 0x770054,
+		color: 0x00707d,
 		wireframe: true,
 		opacity: 0.7,
 		transparent: true,
@@ -61,6 +61,25 @@ module.exports = function (options) {
 	this.model = earth;
 };
 },{}],2:[function(require,module,exports){
+module.exports = function (options) {
+	var geo = new THREE.SphereGeometry(
+		options.radius*0.2,
+		options.segmentation,
+		options.segmentation
+	);
+
+	var mat  = new THREE.MeshLambertMaterial({
+		color: 0xffffff
+	});
+
+	mat.map = THREE.ImageUtils.loadTexture('images/moon_color.jpg');
+	mat.bumpMap = THREE.ImageUtils.loadTexture('images/moon_bump.jpg');
+	mat.bumpScale = 7;
+
+	var moon = new THREE.Mesh(geo, mat);
+	this.model = moon;
+};
+},{}],3:[function(require,module,exports){
 var options = {
 	radius: 160,
 	segmentation: 32,
@@ -77,6 +96,7 @@ var height = $('#planet').height();
 
 
 var Earth = require('./earth.js');
+var Moon = require('./moon.js');
 
 
 var scene = new THREE.Scene();
@@ -95,28 +115,21 @@ var models = new Earth(options);
 var earth = models.model;
 earth.rotation.x = (20/180)*Math.PI;
 earth.castShadow = true;
+earth.recieveShadow = true;
 
 var wire = models.wire_model;
 
-var floor = new THREE.Mesh(
-	new THREE.BoxGeometry(1500, 2000, 20),
-	new THREE.MeshLambertMaterial({
-		color: 0x8b0045,
-		opacity: 0.4,
-		transparent: true
-	})
-);
-
-floor.receiveShadow = true;
-
-floor.position.y = -300;
-floor.rotation.x = Math.PI/2;
+var moon = (new Moon(options)).model;
+moon.castShadow = true;
+moon.recieveShadow = true;
 
 // ADD TO SCENE
 scene.add(earth);
 scene.add(wire);
+scene.add(moon);
 
 
+// PARTICLES
 var party_mat = new THREE.ParticleBasicMaterial({
 	color: 0xffffff,
 	size: 10,
@@ -126,21 +139,18 @@ var party_mat = new THREE.ParticleBasicMaterial({
 });
 
 var party = new THREE.ParticleSystem(wire.geometry, party_mat);
+var party_stars = new THREE.ParticleSystem(
+	new THREE.IcosahedronGeometry(1000, 5),
+	party_mat
+);
 
 scene.add(party);
-
-// var party_geo = new THREE.PlaneGeometry(5, 5);
-
-// for (var j in wire.geometry.vertices) {
-// 	var party = new THREE.Mesh(party_geo, party_mat);
-// 	party.position = (wire.geometry.vertices[j]);
-// 	scene.add(party);
-// }
+scene.add(party_stars);
 
 
 // LIGHTS
-var ambient_light = new THREE.AmbientLight(0x9f717c);
-var directional_light = new THREE.DirectionalLight(0xffeba8, 0.9);
+var ambient_light = new THREE.AmbientLight(0xffffff);
+var directional_light = new THREE.DirectionalLight(0xffffff, 0.9);
 directional_light.position.set(1, 1, 0.5);
 directional_light.castShadow = true;
 
@@ -149,7 +159,9 @@ scene.add(directional_light);
 
 
 var fx_vars = {
-	bobbing: 0
+	bobbing: 0,
+	orbit: 0,
+	moon_rot: Math.PI
 };
 
 var fx = {
@@ -167,6 +179,17 @@ var fx = {
 
 
 		fx_vars.bobbing = (fx_vars.bobbing+0.02)%6.28;
+	},
+	moon_rotation: function () {
+		moon.rotation.y = -1*fx_vars.moon_rot;
+		fx_vars.moon_rot = (fx_vars.moon_rot+0.008)%6.28;
+	},
+	moon_orbit: function () {
+		moon.position.x = Math.cos(fx_vars.orbit)*250;
+		moon.position.y = Math.cos(fx_vars.orbit)*100;
+		moon.position.z = Math.sin(fx_vars.orbit)*250;
+
+		fx_vars.orbit = (fx_vars.orbit+0.008)%6.28;
 	}
 };
 
@@ -197,16 +220,22 @@ for (var i in wire.geometry.vertices) {
 	wire.geometry.vertices[i].last = 1;
 }
 
+var wire_radius = options.radius*1.5;
+
 setInterval(function () {
 	var len = wire.geometry.vertices.length;
 	var vertex = Math.floor(Math.random()*len);
 	var scale = Math.random()*0.1*wire.geometry.vertices[vertex].last;
 
+	if (wire.geometry.vertices[vertex].distanceTo(wire.position) < wire_radius*0.8 && scale < 0) {
+		scale *= -1;
+	}
+
 	wire.geometry.vertices[vertex].add(wire.geometry.vertices[vertex].clone().multiplyScalar(scale));
 
 	wire.geometry.vertices[vertex].last *= -1;
 	wire.geometry.verticesNeedUpdate = true;
-}, 100);
+}, 50);
 
 render();
-},{"./earth.js":1}]},{},[2]);
+},{"./earth.js":1,"./moon.js":2}]},{},[3]);
