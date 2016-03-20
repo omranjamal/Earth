@@ -51,7 +51,7 @@ module.exports = function (options) {
 		wireframe: true,
 		opacity: 0.7,
 		transparent: true,
-		wireframeLinewidth: 2
+		wireframeLinewidth: 1
 	});
 
 	var wire = new THREE.Mesh(wire_geo, wire_mat);
